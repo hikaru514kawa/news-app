@@ -1,34 +1,45 @@
+import { useState, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Image, View, Text } from 'react-native';
+import { StyleSheet, SafeAreaView, ScrollView, FlatList } from 'react-native';
+import { ListItem } from './components/ListItem';
+import dummyArticles from "./dummies/articles";
 
 export default function App() {
+  const [articles, setArticles] = useState([]);
+
+  const fetchArticles = () => {
+    setArticles(dummyArticles)
+  };
+
+  useEffect(() => {
+    fetchArticles()
+  }, [])
+
   return (
-    <View style={styles.container}>
-      <View style={ styles.itemContainer }>
-          <View style={ styles.leftContainer }>
-            <Image
-              style={{ width: 100, height: 100 }}
-              source={{ uri: 'https://picsum.photos/200/300' }}
-            />
-          </View>
-          <View style={ styles.rightContainer }>
-            <Text numberOfLines={3} style={styles.text}>
-              In the following example, the nested title and body text will inherit the fontFamily from styles.baseText, but the title provides its own additional styles. The title and body will stack
-            </Text>
-            <Text style={ styles.subtext }>React Text</Text>
-          </View>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <FlatList
+      data={articles}
+      renderItem={({item}) => {
+        return(
+          <ListItem 
+          imageUrl={item.urlToImage}
+          title={item.title}
+          author={item.author}
+          />
+        )
+      }}
+      keyExtractor={(item, index) => index.toString()}
+      />
       <StatusBar style="auto" />
-    </View>
+    </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#eee',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   itemContainer: {
     height: 100,
